@@ -4,35 +4,32 @@ import DashboardPage from '../pages/dashboardPage.js'
 import MyInfoPage from '../pages/myInfoPage.js'
 import MenuPage from '../pages/menuPage.js'
 
+const Chance = require('chance');
+
+const chance = new Chance();
 const loginPage = new LoginPage()
 const dashboardPage = new DashboardPage()
 const myInfoPage = new MyInfoPage()
 const menuPage = new MenuPage()
 
 describe('Orange HRM TEST', () => {
-
-  const selectorsList = {
     
-  }
-
-  it.only('User Info Update - Sucesso', () => {
-    
+  it('User Info Update - Sucesso', () => {
     loginPage.accessLoginPage()
-    loginPage.loginWithUser(userData.userSuccess.username, userData.userSuccess.password)
+    loginPage.loginWithAnyUser(userData.userSuccess.username, userData.userSuccess.password)
+    
     dashboardPage.checkDashboardPage()
+    
     menuPage.accessMyInfo()
-    myInfoPage.fillPersonalDetails('First Name', 'Mid Name', 'Last Name')
-    myInfoPage.fillEmployDetails('ID5555', 'ID6666', '11223344', '2025-06-06')
+    
+    myInfoPage.fillPersonalDetails(chance.first(), chance.last(), chance.last())
+    myInfoPage.fillEmployDetails(
+      chance.string({ length: 5, numeric: true}), 
+      chance.string({ length: 5, numeric: true}), 
+      chance.string({ length: 8, numeric: true}), 
+      '12-12-2026')
     myInfoPage.fillStatus()
     myInfoPage.saveForm()
-  }
-    )
   })
 
-  it('Login sem Sucesso', () => {
-    cy.visit('/auth/login')
-    cy.get(selectorsList.usernameField).type(userData.userFail.username)
-    cy.get(selectorsList.passwordField).type(userData.userFail.password)
-    cy.get(selectorsList.loginButton).click()
-    cy.get(selectorsList.wrongCredencialAlert) 
-  }) 
+})
